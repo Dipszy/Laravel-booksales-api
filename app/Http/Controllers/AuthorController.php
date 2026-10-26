@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 class AuthorController extends Controller
 {
     /**
-     * Menampilkan daftar seluruh author dari Model
+     * Menampilkan daftar author dari database (Eloquent)
      */
     public function index()
     {
-        // 1. Mengambil data array dari Model Author
-        $authors = Author::all();
+        // Mengambil data author dari tabel database beserta relasi buku
+        $authors = Author::with('books')->get();
 
-        // 2. Mengirimkan data ke View authors.index
         return view('authors.index', compact('authors'));
     }
 }

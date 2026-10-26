@@ -7,7 +7,7 @@
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
         body { background-color: #f4f6f9; padding: 40px 20px; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); padding: 30px; }
+        .container { max-width: 950px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.06); padding: 30px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #edf2f7; padding-bottom: 15px; }
         h1 { font-size: 24px; color: #2d3748; }
         .nav-links a { text-decoration: none; color: #4a5568; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 14px; margin-left: 8px; transition: all 0.2s; }
@@ -19,6 +19,7 @@
         .badge-id { display: inline-block; background-color: #e2e8f0; color: #4a5568; font-weight: bold; border-radius: 6px; padding: 4px 10px; font-size: 12px; }
         .author-photo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #cbd5e0; }
         .author-name { font-weight: 600; color: #2d3748; }
+        .book-badge { display: inline-block; background-color: #edf2f7; color: #2b6cb0; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-top: 4px; }
         .footer { margin-top: 25px; text-align: center; font-size: 13px; color: #a0aec0; }
     </style>
 </head>
@@ -28,11 +29,11 @@
     <div class="header">
         <div>
             <h1>Daftar Author / Penulis</h1>
-            <p style="font-size: 14px; color: #718096; margin-top: 4px;">Data Array Statis dari Model Author (MVC Pattern)</p>
+            <p style="font-size: 14px; color: #718096; margin-top: 4px;">Data Database dari Hasil Laravel Migration & Seeder</p>
         </div>
         <div class="nav-links">
-            <a href="{{ url('/genres') }}">Genre</a>
-            <a href="{{ url('/authors') }}" class="active">Author</a>
+            <a href="{{ url('/books') }}">Daftar Buku</a>
+            <a href="{{ url('/authors') }}" class="active">Daftar Penulis</a>
         </div>
     </div>
 
@@ -41,19 +42,24 @@
             <tr>
                 <th style="width: 8%;">ID</th>
                 <th style="width: 12%;">Foto</th>
-                <th style="width: 28%;">Nama Penulis</th>
-                <th style="width: 52%;">Biografi</th>
+                <th style="width: 25%;">Nama Penulis</th>
+                <th style="width: 55%;">Biografi</th>
             </tr>
         </thead>
         <tbody>
             @forelse($authors as $author)
                 <tr>
-                    <td><span class="badge-id">#{{ $author['id'] }}</span></td>
+                    <td><span class="badge-id">#{{ $author->id }}</span></td>
                     <td>
-                        <img src="{{ $author['photo'] }}" alt="{{ $author['name'] }}" class="author-photo">
+                        <img src="{{ $author->photo }}" alt="{{ $author->name }}" class="author-photo">
                     </td>
-                    <td class="author-name">{{ $author['name'] }}</td>
-                    <td style="color: #4a5568; line-height: 1.5;">{{ $author['bio'] }}</td>
+                    <td>
+                        <div class="author-name">{{ $author->name }}</div>
+                        @if($author->books->count() > 0)
+                            <span class="book-badge">{{ $author->books->count() }} Judul Buku</span>
+                        @endif
+                    </td>
+                    <td style="color: #4a5568; line-height: 1.5;">{{ $author->bio }}</td>
                 </tr>
             @empty
                 <tr>
@@ -64,7 +70,7 @@
     </table>
 
     <div class="footer">
-        Praktikum Framework Laravel &bull; Muhamad Iqbal &bull; STT Terpadu Nurul Fikri
+        Praktikum Laravel Migration & Seeder &bull; Muhamad Iqbal &bull; STT Terpadu Nurul Fikri
     </div>
 </div>
 

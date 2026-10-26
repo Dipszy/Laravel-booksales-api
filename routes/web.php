@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GenreController;
 use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController;
 
-// Halaman utama langsung diarahkan ke daftar genre
+// Rute utama langsung mengarah ke daftar buku
 Route::get('/', function () {
-    return redirect('/genres');
+    return redirect('/books');
 });
 
-// Routing untuk Genre dan Author
-Route::get('/genres', [GenreController::class, 'index']);
+// Routing untuk Book dan Author
+Route::get('/books', [BookController::class, 'index']);
 Route::get('/authors', [AuthorController::class, 'index']);
