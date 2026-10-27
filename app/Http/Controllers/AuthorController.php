@@ -8,13 +8,20 @@ use Illuminate\Http\Request;
 class AuthorController extends Controller
 {
     /**
-     * Menampilkan daftar author dari database (Eloquent)
+     * Menampilkan daftar author dalam format response JSON
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
-        // Mengambil data author dari tabel database beserta relasi buku
+        // Mengambil seluruh data author beserta relasi bukunya dari database
         $authors = Author::with('books')->get();
 
-        return view('authors.index', compact('authors'));
+        // Mengembalikan response JSON standar API
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Daftar data author berhasil diambil',
+            'data' => $authors
+        ], 200);
     }
 }

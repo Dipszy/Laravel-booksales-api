@@ -1,14 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\BookController;
 
-// Rute utama langsung mengarah ke daftar buku
+// Halaman root diarahkan dengan response API info
 Route::get('/', function () {
-    return redirect('/books');
+    return response()->json([
+        'app' => 'BookSales API',
+        'version' => '1.0.0',
+        'message' => 'Silakan akses endpoint API melalui /api/books atau /api/authors'
+    ]);
 });
-
-// Routing untuk Book dan Author
-Route::get('/books', [BookController::class, 'index']);
-Route::get('/authors', [AuthorController::class, 'index']);
