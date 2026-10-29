@@ -14,13 +14,9 @@ Route::get('/health', function () {
     ], 200);
 });
 
-// Routing API Genre (Read All & Create)
-Route::get('/genres', [GenreController::class, 'index']);
-Route::post('/genres', [GenreController::class, 'store']);
-
-// Routing API Author (Read All & Create)
-Route::get('/authors', [AuthorController::class, 'index']);
-Route::post('/authors', [AuthorController::class, 'store']);
+// Routing API menggunakan apiResource (otomatis membuat index, store, show, update, destroy)
+Route::apiResource('genres', GenreController::class);
+Route::apiResource('authors', AuthorController::class);
 
 // Routing API Book
-Route::get('/books', [BookController::class, 'index']);
+Route::apiResource('books', BookController::class);

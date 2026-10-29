@@ -15,7 +15,6 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        // Mengambil semua data author beserta relasi bukunya
         $authors = Author::with('books')->get();
 
         return response()->json([
@@ -33,7 +32,6 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi input request
         $validator = Validator::make($request->all(), [
             'name'  => 'required|string|max:255',
             'photo' => 'required|string',
@@ -48,18 +46,109 @@ class AuthorController extends Controller
             ], 422);
         }
 
-        // 2. Simpan data author baru ke database
         $author = Author::create([
             'name'  => $request->name,
             'photo' => $request->photo,
             'bio'   => $request->bio,
         ]);
 
-        // 3. Return response JSON 201 Created
         return response()->json([
             'status' => 'success',
             'message' => 'Data author baru berhasil ditambahkan',
             'data' => $author
         ], 201);
+    }
+
+    /**
+     * Show detail single data author (GET /api/authors/{id})
+     *
+     * @param  int|string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $author = Author::with('books')->find($id);
+
+        // Validasi jika data author tidak ditemukan
+        if (!$author) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Data author dengan ID {$id} tidak ditemukan"
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Detail data author berhasil ditemukan',
+            'data' => $author
+        ], 200);
+    }
+
+    /**
+     * Update data author (PUT/PATCH /api/authors/{id})
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int|string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $author = Author::find($id);
+
+        // Validasi jika data author tidak ditemukan
+        if (!$author) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Data author dengan ID {$id} tidak ditemukan"
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name'  => 'sometimes|required|string|max:255',
+            'photo' => 'sometimes|required|string',
+            'bio'   => 'sometimes|required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $author->update($request->only(['name', 'photo', 'bio']));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data author berhasil diperbarui',
+            'data' => $author
+        ], 200);
+    }
+
+    /**
+     * Destroy / Delete data author (DELETE /api/authors/{id})
+     *
+     * @param  int|string  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        $author = Author::find($id);
+
+        // Validasi jika data author tidak ditemukan
+        if (!$author) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Data author dengan ID {$id} tidak ditemukan"
+            ], 404);
+        }
+
+        $author->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data author berhasil dihapus'
+        ], 200);
     }
 }
