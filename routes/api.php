@@ -5,14 +5,17 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes - BookSales API
 |--------------------------------------------------------------------------
 | Aturan Akses Middleware:
-| 1. Read All (index) & Show detail -> Public (Bisa diakses siapa saja)
-| 2. Create (store), Update (update), Destroy (destroy) -> Khusus Admin (Middleware 'admin')
+| 1. Read All & Show (Genre, Author, Book) -> Public (Bebas diakses)
+| 2. Create, Update, Destroy (Genre, Author, Book) -> Khusus Admin (Middleware 'admin')
+| 3. Read All & Destroy (Transaction) -> Khusus Admin (Middleware 'admin')
+| 4. Create, Update, Show (Transaction) -> Khusus Customer Terautentikasi (Middleware 'customer')
 |--------------------------------------------------------------------------
 */
 
@@ -42,9 +45,25 @@ Route::get('/books/{id}', [BookController::class, 'show']);
 
 
 // =========================================================================
-// 2. PROTECTED ROUTES (Hanya Dapat Diakses oleh User Ber-role Admin)
+// 2. CUSTOMER PROTECTED ROUTES (Khusus Customer Terautentikasi)
+// =========================================================================
+Route::middleware(['customer'])->group(function () {
+    // Create, Update, dan Show Transaksi hanya dapat diakses oleh Customer
+    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+    Route::put('/transactions/{id}', [TransactionController::class, 'update']);
+    Route::patch('/transactions/{id}', [TransactionController::class, 'update']);
+});
+
+
+// =========================================================================
+// 3. ADMIN PROTECTED ROUTES (Khusus Admin)
 // =========================================================================
 Route::middleware(['admin'])->group(function () {
+    // Read All dan Destroy Transaksi hanya dapat diakses oleh Admin
+    Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::delete('/transactions/{id}', [TransactionController::class, 'destroy']);
+
     // Create, Update, Destroy Genre
     Route::post('/genres', [GenreController::class, 'store']);
     Route::put('/genres/{id}', [GenreController::class, 'update']);

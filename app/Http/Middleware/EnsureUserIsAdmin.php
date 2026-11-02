@@ -44,6 +44,8 @@ class EnsureUserIsAdmin
             ], 403);
         }
 
+        $request->setUserResolver(fn() => $user);
+
         return $next($request);
     }
 }

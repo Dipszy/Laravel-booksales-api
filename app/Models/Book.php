@@ -27,4 +27,12 @@ class Book extends Model
     {
         return $this->belongsTo(Author::class, 'author_id');
     }
+
+    /**
+     * Relasi ke model Transaction (Has-many)
+     */
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'book_id');
+    }
 }
